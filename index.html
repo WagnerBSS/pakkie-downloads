@@ -216,6 +216,14 @@
       transform: translateY(-2px);
     }
 
+    .downloads-note {
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      line-height: 1.5;
+      text-align: center;
+      margin: -18px 0 24px;
+    }
+
     .grid-servidores {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
@@ -773,6 +781,7 @@
       <button class="filter-btn" onclick="filtrar('tutoriais', this)">Tutoriais & Sistemas</button>
       <button class="filter-btn" onclick="filtrar('edicao', this)">Chroma Key & Edição</button>
     </div>
+    <p class="downloads-note">Alguns arquivos estão disponíveis no Discord (#downloads). Devido à quantidade de arquivos e vídeos, o vídeo de um card pode não corresponder exatamente ao download.</p>
     <div class="grid-servidores" id="gridServidores"></div>
   </main>
 
@@ -833,18 +842,31 @@
       { id: "pakkie_win11_insider", titulo: "Como BAIXAR e instalar o WINDOWS 11 [Insider Preview]", categoria: "tutoriais", categoriaNome: "Tutoriais & Sistemas", descricao: "Passo a passo para baixar e instalar a nova versão do Windows via Windows Insider.", youtubeId: "agGhLbh9Krc", mediafireUrl: discordUrl, impulsos: 0 },
       { id: "pakkie_win10_desativar_update", titulo: "Como DESATIVAR DE VEZ as atualizações automáticas do WINDOWS 10", categoria: "tutoriais", categoriaNome: "Tutoriais & Sistemas", descricao: "Método definitivo e simples para desativar o Windows Update no Windows 10.", youtubeId: "8HUE6H9e8Ys", mediafireUrl: discordUrl, impulsos: 0 },
       { id: "pakkie_win10_ativar", titulo: "Como ATIVAR Qualquer Versão do WINDOWS 10 Sem Programa", categoria: "tutoriais", categoriaNome: "Tutoriais & Sistemas", descricao: "Ativação rápida e fácil sem crack e sem programas adicionais.", youtubeId: "cb_fLyrKngs", mediafireUrl: discordUrl, impulsos: 0 },
-      { id: "pakkie_office365_ativar", titulo: "🔥 ATIVANDO OFFICE 365 100% GRATIS (Sem Programas)", categoria: "tutoriais", categoriaNome: "Tutoriais & Sistemas", descricao: "Comandos simples para ativar o Office 365 sem baixar ativadores.", youtubeId: "uLKsVfumFrM", mediafireUrl: "http://bit.ly/ComandosDownload", impulsos: 0 }
+      { id: "pakkie_office365_ativar", titulo: "🔥 ATIVANDO OFFICE 365 100% GRATIS (Sem Programas)", categoria: "tutoriais", categoriaNome: "Tutoriais & Sistemas", descricao: "Comandos simples para ativar o Office 365 sem baixar ativadores.", youtubeId: "uLKsVfumFrM", mediafireUrl: "http://bit.ly/ComandosDownload", impulsos: 0 },
+      { id: "pakkie_rankup_magic_mega", titulo: "RANKUP MAGIC — download direto", categoria: "rankup", categoriaNome: "Rank Up", descricao: "Arquivo do RankUP Magic enviado pelo Pakkie.", youtubeId: "g-Jnrt2NcAc", mediafireUrl: "https://mega.nz/file/nuInVSpD#hdrtRZsU7dc9wBiTG5qRWtx2Kz-fwmmjk0PAd5Yf2xc", impulsos: 0 },
+      { id: "pakkie_rankup_previous", titulo: "Servidor de RankUp 1.0 — download direto", categoria: "rankup", categoriaNome: "Rank Up", descricao: "Arquivo do servidor RankUp 1.0 compartilhado no MediaFire.", youtubeId: "AFmW2bQVfyw", mediafireUrl: "https://www.mediafire.com/file/8dqtcfwl2m10rsb/Servidor_de_RankUp_1.0.rar/file", impulsos: 0 },
+      { id: "pakkie_rankup_wakemc", titulo: "RankUp — arquivo BrazilCraft", categoria: "rankup", categoriaNome: "Rank Up", descricao: "Arquivo ZIP de RankUp compartilhado no MediaFire.", youtubeId: "kSWpSSw_TFk", mediafireUrl: "https://www.mediafire.com/file/o7sewpkj95vlfad/RANKUP_OP_-_%5BBrazilCraft%5D.zip/file", impulsos: 0 }
     ];
 
     let categoriaAtual = 'todos';
 
     function impulsionar(itemId) {
       const item = servidoresData.find(s => s.id === itemId);
-      if (item) {
-        item.impulsos = (item.impulsos || 0) + 1;
-        if (db) db.ref('impulsos/' + itemId).set(item.impulsos);
-        reordenarERenderizar();
+      if (!item) return;
+      if (!db) {
+        window.alert('Não foi possível conectar ao Firebase. Tente novamente mais tarde.');
+        return;
       }
+
+      db.ref('impulsos/' + itemId).transaction(currentValue => {
+        const currentCount = Number(currentValue);
+        return (Number.isFinite(currentCount) ? Math.max(currentCount, 0) : 0) + 1;
+      }).then(result => {
+        if (!result.committed) throw new Error('O impulso não foi salvo.');
+      }).catch(error => {
+        console.error('Falha ao salvar impulso:', error);
+        window.alert('Não foi possível salvar seu impulso. Tente novamente.');
+      });
     }
 
     function carregarImpulsosFirebase() {
@@ -858,7 +880,10 @@
         if (dados) {
           Object.keys(dados).forEach(key => {
             const item = servidoresData.find(s => s.id === key);
-            if (item) item.impulsos = dados[key];
+            if (item) {
+              const count = Number(dados[key]);
+              item.impulsos = Number.isFinite(count) && count >= 0 ? count : 0;
+            }
           });
         }
         reordenarERenderizar();
@@ -898,6 +923,8 @@
               onerror="this.onerror=null; this.src='${fallbackThumb}';"
               alt="${item.titulo}"
               class="card-thumb"
+              loading="lazy"
+              decoding="async"
             >
             <div class="play-overlay">
               <div class="play-icon">
@@ -914,7 +941,7 @@
               </button>
               <a href="${item.mediafireUrl}" target="_blank" rel="noopener noreferrer" class="btn-download">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                Acessar Download
+                ${item.mediafireUrl === discordUrl ? 'Ver arquivos no Discord' : 'Baixar arquivo'}
               </a>
               <a href="${videoUrl}" target="_blank" rel="noopener noreferrer" class="btn-download">
                 ▶ Ver Vídeo
