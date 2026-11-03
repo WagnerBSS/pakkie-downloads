@@ -1,0 +1,22 @@
+INTEGRACAO YOUTUBE — PAKKIE
+
+Arquivos:
+- index.html: página com painel de visualizações e ranking.
+- PakkiePlays.jpg: logo/favicon existente.
+- api/youtube.js: função de servidor da Vercel que consulta o YouTube Data API.
+
+CONFIGURAÇÃO OBRIGATÓRIA NA VERCEL:
+1. Abra https://console.cloud.google.com/ e crie ou selecione um projeto.
+2. Em APIs e serviços > Biblioteca, ative "YouTube Data API v3".
+3. Em APIs e serviços > Credenciais, crie uma chave de API.
+4. Na Vercel, abra o projeto pakkie-downloads > Settings > Environment Variables.
+5. Crie YOUTUBE_API_KEY com o valor da chave criada no Google.
+6. (Opcional) Crie YOUTUBE_CHANNEL_HANDLE com @Pakkie_. Se não criar, esse será o padrão.
+7. Salve e faça um novo deploy (Redeploy) ou envie os arquivos atualizados pelo Git.
+
+IMPORTANTE:
+- NÃO coloque a chave da API dentro do index.html.
+- A chave deve ficar somente na variável YOUTUBE_API_KEY da Vercel.
+- O painel mostra as views totais do canal e classifica os 8 vídeos mais vistos entre os 200 uploads mais recentes encontrados.
+- A função usa cache na Vercel por 1 hora; a página tenta atualizar a cada 15 minutos, mas o cache evita chamadas excessivas.
+- Para publicar, mantenha a estrutura: index.html, PakkiePlays.jpg e pasta api/youtube.js na raiz do projeto.
