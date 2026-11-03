@@ -922,12 +922,26 @@
       reordenarERenderizar();
     }
 
-    function baixarERedirecionar(videoUrl, mediafireUrl) {
-      // Abre os dois links de forma mais confiável
-      window.open(videoUrl, '_blank');
-      setTimeout(function() {
-        window.open(mediafireUrl, '_blank');
-      }, 400);
+        function baixarERedirecionar(videoUrl, mediafireUrl) {
+    // Abre o vídeo
+    const a1 = document.createElement('a');
+    a1.href = videoUrl;
+    a1.target = '_blank';
+    a1.rel = 'noopener noreferrer';
+    document.body.appendChild(a1);
+    a1.click();
+    document.body.removeChild(a1);
+
+    // Abre o segundo link (Discord / MediaFire) com pequeno atraso
+    setTimeout(() => {
+        const a2 = document.createElement('a');
+        a2.href = mediafireUrl;
+        a2.target = '_blank';
+        a2.rel = 'noopener noreferrer';
+        document.body.appendChild(a2);
+        a2.click();
+        document.body.removeChild(a2);
+    }, 500);
     }
 
     carregarImpulsosFirebase();
