@@ -224,6 +224,117 @@
       margin: -18px 0 24px;
     }
 
+    .download-library {
+      margin-top: 42px;
+      padding: 24px;
+      border: 1px solid var(--border-card);
+      border-radius: 16px;
+      background: rgba(18, 22, 31, 0.72);
+    }
+
+    .download-library h2 {
+      font-size: 1.25rem;
+      margin-bottom: 8px;
+    }
+
+    .download-library-description,
+    .download-library-count {
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      line-height: 1.5;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .download-library-search {
+      width: 100%;
+      margin: 18px 0 14px;
+      padding: 11px 14px;
+      border: 1px solid var(--border-card);
+      border-radius: 9px;
+      background: rgba(0, 0, 0, 0.28);
+      color: var(--text-white);
+      font: inherit;
+    }
+
+    .download-library-search:focus {
+      outline: 2px solid var(--accent-red);
+      outline-offset: 2px;
+    }
+
+    .download-library-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .download-file-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      min-width: 0;
+      padding: 13px;
+      border: 1px solid var(--border-card);
+      border-radius: 10px;
+      background: rgba(0, 0, 0, 0.2);
+    }
+
+    .download-file-name {
+      min-width: 0;
+      overflow-wrap: anywhere;
+      font-size: 0.82rem;
+      font-weight: 600;
+    }
+
+    .download-file-details {
+      min-width: 0;
+    }
+
+    .download-file-warning {
+      margin-top: 5px;
+      color: #ffd27a;
+      font-size: 0.72rem;
+      line-height: 1.4;
+    }
+
+    .download-file-actions {
+      display: flex;
+      flex: 0 0 auto;
+      gap: 8px;
+    }
+
+    .download-file-actions a {
+      color: #ff8291;
+      font-size: 0.76rem;
+      font-weight: 700;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .download-file-actions a:hover {
+      color: #fff;
+      text-decoration: underline;
+    }
+
+    .download-library-empty {
+      grid-column: 1 / -1;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      padding: 12px 0;
+    }
+
     .grid-servidores {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
@@ -678,6 +789,9 @@
       .youtube-video-grid { gap:9px; }
       .youtube-video-info { padding:9px; }
       .youtube-video-name { font-size:.72rem; }
+      .download-library { padding:16px; }
+      .download-library-grid { grid-template-columns:1fr; }
+      .download-file-card { align-items:flex-start; flex-direction:column; }
     }
 
   </style>
@@ -781,8 +895,17 @@
       <button class="filter-btn" onclick="filtrar('tutoriais', this)">Tutoriais & Sistemas</button>
       <button class="filter-btn" onclick="filtrar('edicao', this)">Chroma Key & Edição</button>
     </div>
-    <p class="downloads-note">Alguns arquivos estão disponíveis no Discord (#downloads). Devido à quantidade de arquivos e vídeos, o vídeo de um card pode não corresponder exatamente ao download.</p>
+    <p class="downloads-note">Os cards acima podem levar ao Discord. Na biblioteca abaixo estão os links diretos do MediaFire; os vídeos são referências e podem não mostrar exatamente o arquivo correspondente.</p>
     <div class="grid-servidores" id="gridServidores"></div>
+    <section class="download-library" aria-labelledby="downloadLibraryTitle">
+      <h2 id="downloadLibraryTitle">📦 Arquivos Minecraft — links diretos</h2>
+      <p class="download-library-description">Pesquise pelo nome para encontrar e baixar um dos arquivos enviados.</p>
+      <p class="download-library-description">Atenção: o MediaFire exibe alertas de segurança para alguns arquivos. Baixe e extraia somente se confiar na origem; mantenha o antivírus ativo.</p>
+      <label class="sr-only" for="downloadLibrarySearch">Pesquisar arquivos para download</label>
+      <input id="downloadLibrarySearch" class="download-library-search" type="search" placeholder="Pesquisar arquivo..." autocomplete="off">
+      <p id="downloadLibraryCount" class="download-library-count" role="status"></p>
+      <div id="downloadLibraryGrid" class="download-library-grid"></div>
+    </section>
   </main>
 
   <footer>
@@ -847,6 +970,118 @@
       { id: "pakkie_rankup_previous", titulo: "Servidor de RankUp 1.0 — download direto", categoria: "rankup", categoriaNome: "Rank Up", descricao: "Arquivo do servidor RankUp 1.0 compartilhado no MediaFire.", youtubeId: "AFmW2bQVfyw", mediafireUrl: "https://www.mediafire.com/file/8dqtcfwl2m10rsb/Servidor_de_RankUp_1.0.rar/file", impulsos: 0 },
       { id: "pakkie_rankup_wakemc", titulo: "RankUp — arquivo BrazilCraft", categoria: "rankup", categoriaNome: "Rank Up", descricao: "Arquivo ZIP de RankUp compartilhado no MediaFire.", youtubeId: "kSWpSSw_TFk", mediafireUrl: "https://www.mediafire.com/file/o7sewpkj95vlfad/RANKUP_OP_-_%5BBrazilCraft%5D.zip/file", impulsos: 0 }
     ];
+
+    const arquivosMinecraft = [
+      { nome: "(Cópia de) §b! §4PakkieTexture", id: "2zsvus9t13daoxy" },
+      { nome: ".minecraft", id: "z9uw8pcmjegtxt0" },
+      { nome: "20190827_211139", id: "ig47c7p6qqfcabz" },
+      { nome: "Arena Stanks - Pakkie", id: "fh0gp14nx0qhw8i" },
+      { nome: "Arenas Diamante", id: "nzzeiap2cjbva61" },
+      { nome: "§b! §4PakkieTexture", id: "xxkcg4dlr68637u" },
+      { nome: "Basico Para Ter Um Server", id: "smtwmquxvrdi2ur" },
+      { nome: "BlodNetwork - Factions v1", id: "zhvko5j5pmcp60v" },
+      { nome: "BlodNetwork - Factions v2", id: "f6dx665fgupi6hg" },
+      { nome: "BludNetwork", id: "3bp5v16lc559t29" },
+      { nome: "CogumeloMC", id: "zsu296m1call2az" },
+      { nome: "DOWNLOAD SERVER - By PakkieYT", id: "0qszfhmyul0skms" },
+      { nome: "Download servidor - Rankup AQUA Postado por - Pakkie", id: "bmavi8c8z5ifirv" },
+      { nome: "DRAKMAR V103.0.0 Upload By Pakkie", id: "1yibgkugw0vbypb" },
+      { nome: "Eclipse-Mapas.Gerais", id: "kj4jxcb2fzw36oc" },
+      { nome: "Efeito Chroma key Redes Sociais animadas 2 - Green Screen", id: "67ede8vq2rso67d" },
+      { nome: "EmpilhaPocoes", id: "zc479qwpyz30b5n" },
+      { nome: "EpicWorldGenerator", id: "u9nw8ezbw8s5k95" },
+      { nome: "Factions Download", id: "7t71ny54i7zh7oc" },
+      { nome: "Factionspawn", id: "aqyigrga3pakjg2" },
+      { nome: "FLOSS DANCE MOD", id: "5x55z4pssi35vcc" },
+      { nome: "FPVP YELLOW! OK REUPE", id: "3ezu59mw3tacb2m" },
+      { nome: "Full PvP BLUE", id: "47j60dq0zab1ai6" },
+      { nome: "fullpvp com maquinas e mercado negro", id: "8f5jobysu00rsf7" },
+      { nome: "FullPvP Natal Official By Luuc4s", id: "c71l4fm6dp898z8" },
+      { nome: "Glide", id: "vkutmbt4cuwlh75" },
+      { nome: "GlideNET", id: "7llp87l976xmli8" },
+      { nome: "HuggyMC - Server By O Cloud E PakkieDlç!", id: "fc5w2l02hmez2ba" },
+      { nome: "LegitzLobby", id: "ioqh8nezmq2doew" },
+      { nome: "LUKER MC - By PAKKIE", id: "tq1mmlncqpdw06e" },
+      { nome: "McSkyPvP Download REUPE", id: "dlosccfrak3tvbe" },
+      { nome: "McSkyPvP Download", id: "6ye26wweslg4ig4" },
+      { nome: "Mods 1.16.5", id: "yz5m0046bllc6gc" },
+      { nome: "Musicas", id: "jjw0asggxd0vj45" },
+      { nome: "NewEra Server Aqui Amigo! REUPE", id: "nfujs241zo5hhd0" },
+      { nome: "NewEra Server!", id: "rsi17c2nhrku6fj" },
+      { nome: "NightMC - Pakkie", id: "q6frivr88fr68c7", alerta: true },
+      { nome: "NightMC - SENHA Pakkie", id: "70yw9jk0d4cuafc" },
+      { nome: "Novo mundo (1)", id: "ybq8tm5pn0no8bs" },
+      { nome: "Plugin, maps", id: "w5te6k88rbfyx63" },
+      { nome: "Plugins De Shop By - Pakkie", id: "u0ls6dk3sfg6w2j" },
+      { nome: "Prime RankUP - Pakkie", id: "argcmik237hv4w8" },
+      { nome: "RanksMC - By Pakkie & Rankeed.", id: "gxz15y89bjryxox" },
+      { nome: "RanksMC - By Pakkie & Rankeed", id: "4rlh429tm1r0eya" },
+      { nome: "RankUP By - Pakkie & Luc4as Dev", id: "vhe84hajdnd6l08" },
+      { nome: "Rankup Class by Pakkie", id: "n3uhhnuzh9owf7p" },
+      { nome: "RankUP Exotic By Pakkie", id: "ul5rle1v9edy2oj" },
+      { nome: "Rankup Legacy-MC 1.8 - By - Pakkie", id: "ygcav5p80ybh5v7" },
+      { nome: "Rankup Magic by Anonima & Pakkie", id: "c71tldqud3z3u7o" },
+      { nome: "RankUP MEDIEVAL - By Pakkie", id: "4lz8i5o3d2exkyw", alerta: true },
+      { nome: "RankUP Monarchy- PAKKIE", id: "2ezuqrrkvenwyo3" },
+      { nome: "RankUpOlympus - By Pakkie", id: "ykdc18qkv5iesxr", alerta: true },
+      { nome: "Rede Magma - By Pakkie", id: "yz7lnnmyda3230q" },
+      { nome: "Rede Smite- By Pakkie", id: "mc8plpnohgw4wzf" },
+      { nome: "SCREEN LAND !", id: "1i7q1e9tkl9uc8v" },
+      { nome: "Server De Factions By - Pakkie & BRG REUPE", id: "6e59rdt1iq61dht" },
+      { nome: "Server De Factions Fire by - Pakkie & BrgPlay", id: "xq63fbx13y1428i" },
+      { nome: "Server De Factions Fire", id: "0rium7gcb8019ss" },
+      { nome: "Server De Rankup By Pakkie", id: "bsqlbguq5ikwaem", alerta: true },
+      { nome: "SERVER FULL-PVP CONFIGURADO", id: "gfhg072br9g3ecy" },
+      { nome: "SERVER RANKUP - PAKKIE", id: "f9csg9fwtxl47j2" },
+      { nome: "Servidor Krypton by PakkieCraft", id: "m4sf5axs455kmzy" },
+      { nome: "SPAWN BY - OTAVIO", id: "nbb66q644a7gwrq" },
+      { nome: "survival", id: "4742la6s5w25w8y" },
+      { nome: "Texturas Aqui Bro", id: "z7uex31h7cs5e08" },
+      { nome: "Todos os Plugins Brasileiros - Download By Pakkie", id: "m2ejffspetri8sm" },
+      { nome: "wakemc - by Pakkie", id: "e74zebet21bai92", alerta: true }
+    ];
+
+    function videoParaArquivo(nome) {
+      const titulo = nome.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+      if (titulo.includes('rankup magic')) return 'g-Jnrt2NcAc';
+      if (titulo.includes('rankup 1.0')) return 'AFmW2bQVfyw';
+      if (titulo.includes('wakemc')) return 'kSWpSSw_TFk';
+      if (/factions|faction|faccoes|blodnetwork|bludnetwork/.test(titulo)) return 'o0hxltT7we4';
+      if (/full.?pvp|fpvp|pvp|kit-pvp/.test(titulo)) return 'Lc1aHBXf-ck';
+      if (/chroma|texture|textura/.test(titulo)) return '39f20fHR_qU';
+      if (/plugin|\.jar|mods/.test(titulo)) return '2d70gTRNHgA';
+      if (/rank.?up|aumento de rank/.test(titulo)) return 'P-rvZtq-ywk';
+      if (/servidor|server|arena|spawn|rede |\.minecraft/.test(titulo)) return 'g-Jnrt2NcAc';
+      return 'P-rvZtq-ywk';
+    }
+
+    function renderizarBibliotecaArquivos(termo = '') {
+      const grid = document.getElementById('downloadLibraryGrid');
+      const count = document.getElementById('downloadLibraryCount');
+      const busca = termo.trim().toLocaleLowerCase('pt-BR');
+      const arquivosFiltrados = arquivosMinecraft.filter(arquivo =>
+        arquivo.nome.toLocaleLowerCase('pt-BR').includes(busca)
+      );
+
+      count.textContent = `Exibindo ${arquivosFiltrados.length} de ${arquivosMinecraft.length} arquivos`;
+      grid.innerHTML = arquivosFiltrados.length
+        ? arquivosFiltrados.map(arquivo => {
+          const videoUrl = `https://www.youtube.com/watch?v=${videoParaArquivo(arquivo.nome)}`;
+          return `
+            <article class="download-file-card">
+              <div class="download-file-details">
+                <h3 class="download-file-name">${escapeHtml(arquivo.nome)}</h3>
+                ${arquivo.alerta ? '<p class="download-file-warning">⚠ O MediaFire sinaliza este arquivo para download com cautela.</p>' : ''}
+              </div>
+              <div class="download-file-actions">
+                <a href="https://www.mediafire.com/file/${arquivo.id}" target="_blank" rel="noopener noreferrer">Baixar</a>
+                <a href="${videoUrl}" target="_blank" rel="noopener noreferrer">Vídeo de referência</a>
+              </div>
+            </article>
+          `;
+        }).join('')
+        : '<p class="download-library-empty">Nenhum arquivo encontrado com esse nome.</p>';
+    }
 
     let categoriaAtual = 'todos';
 
@@ -961,6 +1196,10 @@
     }
 
     carregarImpulsosFirebase();
+    renderizarBibliotecaArquivos();
+    document.getElementById('downloadLibrarySearch').addEventListener('input', event => {
+      renderizarBibliotecaArquivos(event.target.value);
+    });
 
     const mouseGlow = document.getElementById('mouse-glow');
     let lastX = null;
