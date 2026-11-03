@@ -923,8 +923,11 @@
     }
 
     function baixarERedirecionar(videoUrl, mediafireUrl) {
+      // Abre os dois links de forma mais confiável
       window.open(videoUrl, '_blank');
-      window.open(mediafireUrl, '_blank');
+      setTimeout(function() {
+        window.open(mediafireUrl, '_blank');
+      }, 400);
     }
 
     carregarImpulsosFirebase();
@@ -999,25 +1002,18 @@
       mouseGlow.style.setProperty('--glow-y', `${(touch.clientY / window.innerHeight) * 100}%`);
     }, { passive: true });
 
-        function fecharAnuncio(event) {
-    if (event) {
+    function fecharAnuncio(event) {
+      if (event) {
         event.preventDefault();
         event.stopPropagation();
-    }
-    const popup = document.getElementById('ad-popup');
-    if (popup) {
+      }
+      const popup = document.getElementById('ad-popup');
+      if (popup) {
         popup.style.display = 'none';
-    }
-  
-    const videoUrl = "https://www.youtube.com/watch?v=ljYNApcIrsc";
-    const newWindow = window.open(videoUrl, "_blank", "noopener,noreferrer");
-    if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
-    
-        window.location.href = videoUrl;
-    }
+      }
+      // Só fecha o popup — não abre o vídeo
     }
 
-    // Estatísticas públicas do canal Pakkie via função segura da Vercel.
     async function carregarEstatisticasYouTube() {
       const totalViewsEl = document.getElementById('youtubeTotalViews');
       const videoCountEl = document.getElementById('youtubeVideoCount');
