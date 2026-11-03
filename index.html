@@ -161,10 +161,24 @@
       max-width: 100%;
       overflow-wrap: anywhere;
       text-align: center;
-      background: linear-gradient(90deg, #ffffff 30%, var(--accent-red) 100%);
+      background: linear-gradient(90deg, #c4001d, #ff1230, var(--accent-red), #c4001d);
+      background-size: 200% 100%;
+      background-position: 0% 50%;
+      animation: brandTitleRedWave 3s ease-in-out infinite alternate;
       -webkit-background-clip: text;
       background-clip: text;
       -webkit-text-fill-color: transparent;
+    }
+
+    @keyframes brandTitleRedWave {
+      to { background-position: 100% 50%; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .brand-title {
+        animation: none;
+        background-position: 50% 50%;
+      }
     }
 
     .brand-subtitle {
