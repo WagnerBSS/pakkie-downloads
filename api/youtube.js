@@ -24,7 +24,7 @@ async function youtubeGet(resource, params, apiKey) {
 }
 
 module.exports = async function handler(req, res) {
-  res.setHeader('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=86400');
+  res.setHeader('Cache-Control', 'public, s-maxage=900, stale-while-revalidate=3600');
   res.setHeader('Content-Type', 'application/json; charset=utf-8');
 
   if (req.method !== 'GET') {
@@ -104,7 +104,12 @@ module.exports = async function handler(req, res) {
         title: channel.snippet?.title || 'Pakkie',
         url: `https://www.youtube.com/${CHANNEL_HANDLE}`,
         views: Number(channel.statistics?.viewCount || 0),
-        videoCount: Number(channel.statistics?.videoCount || 0)
+        subscriberCount: channel.statistics?.hiddenSubscriberCount
+          ? null
+          : channel.statistics?.subscriberCount == null
+            ? null
+            : Number(channel.statistics.subscriberCount),
+        hiddenSubscriberCount: Boolean(channel.statistics?.hiddenSubscriberCount)
       },
       videos,
       rankingScope: 'Entre os 200 vídeos mais recentes do canal',

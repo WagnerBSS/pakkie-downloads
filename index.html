@@ -745,8 +745,8 @@
           <div class="youtube-metric-value" id="youtubeTotalViews">—</div>
         </div>
         <div class="youtube-metric">
-          <div class="youtube-metric-label">Vídeos publicados</div>
-          <div class="youtube-metric-value" id="youtubeVideoCount">—</div>
+          <div class="youtube-metric-label">Inscritos (aprox.)</div>
+          <div class="youtube-metric-value" id="youtubeSubscriberCount">—</div>
         </div>
       </div>
       <div class="youtube-ranking-heading">
@@ -1012,7 +1012,7 @@
 
     async function carregarEstatisticasYouTube() {
       const totalViewsEl = document.getElementById('youtubeTotalViews');
-      const videoCountEl = document.getElementById('youtubeVideoCount');
+      const subscriberCountEl = document.getElementById('youtubeSubscriberCount');
       const videosEl = document.getElementById('youtubeTopVideos');
       const updatedEl = document.getElementById('youtubeStatsUpdated');
       const scopeEl = document.getElementById('youtubeRankingScope');
@@ -1024,7 +1024,11 @@
         if (!response.ok) throw new Error(data.error || 'Não foi possível carregar as estatísticas.');
 
         totalViewsEl.textContent = Number(data.channel.views || 0).toLocaleString('pt-BR');
-        videoCountEl.textContent = Number(data.channel.videoCount || 0).toLocaleString('pt-BR');
+        subscriberCountEl.textContent = data.channel.hiddenSubscriberCount
+          ? 'Oculto'
+          : data.channel.subscriberCount == null
+            ? 'Indisponível'
+            : Number(data.channel.subscriberCount).toLocaleString('pt-BR');
         scopeEl.textContent = data.rankingScope || 'Vídeos do canal';
         videosEl.innerHTML = (data.videos || []).map((video, index) => `
           <a class="youtube-video-card" href="${video.url}" target="_blank" rel="noopener noreferrer" title="${escapeHtml(video.title)}">
@@ -1038,7 +1042,7 @@
 
         const updatedAt = data.updatedAt ? new Date(data.updatedAt) : new Date();
         updatedEl.textContent = `Atualizado às ${updatedAt.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`;
-        messageEl.textContent = 'Dados públicos fornecidos pelo YouTube. Atualização automática.';
+        messageEl.textContent = 'Dados públicos do YouTube. Inscritos podem ter arredondamento e atraso na atualização.';
         messageEl.classList.remove('error');
       } catch (error) {
         console.error('Falha ao carregar estatísticas do YouTube:', error);

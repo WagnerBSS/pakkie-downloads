@@ -17,6 +17,6 @@ CONFIGURAÇÃO OBRIGATÓRIA NA VERCEL:
 IMPORTANTE:
 - NÃO coloque a chave da API dentro do index.html.
 - A chave deve ficar somente na variável YOUTUBE_API_KEY da Vercel.
-- O painel mostra as views totais do canal e classifica os 8 vídeos mais vistos entre os 200 uploads mais recentes encontrados.
-- A função usa cache na Vercel por 1 hora; a página tenta atualizar a cada 15 minutos, mas o cache evita chamadas excessivas.
+- O painel mostra as views totais e a contagem aproximada de inscritos do canal, além de classificar os 8 vídeos mais vistos entre os 200 uploads mais recentes encontrados.
+- A contagem de inscritos fornecida pelo YouTube pode ser arredondada e ter atraso; ela não é atualizada em tempo real. A função usa cache na Vercel por 15 minutos, e a página também tenta atualizar nesse intervalo.
 - Para publicar, mantenha a estrutura: index.html, PakkiePlays.jpg e pasta api/youtube.js na raiz do projeto.
