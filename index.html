@@ -999,13 +999,23 @@
       mouseGlow.style.setProperty('--glow-y', `${(touch.clientY / window.innerHeight) * 100}%`);
     }, { passive: true });
 
-    function fecharAnuncio(event) {
-      if (event) event.stopPropagation();
-      const popup = document.getElementById('ad-popup');
-      if (popup) popup.style.display = 'none';
-      window.open("https://www.youtube.com/watch?v=ljYNApcIrsc", "_blank");
+        function fecharAnuncio(event) {
+    if (event) {
+        event.preventDefault();
+        event.stopPropagation();
     }
-
+    const popup = document.getElementById('ad-popup');
+    if (popup) {
+        popup.style.display = 'none';
+    }
+  
+    const videoUrl = "https://www.youtube.com/watch?v=ljYNApcIrsc";
+    const newWindow = window.open(videoUrl, "_blank", "noopener,noreferrer");
+    if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
+    
+        window.location.href = videoUrl;
+    }
+    }
 
     // Estatísticas públicas do canal Pakkie via função segura da Vercel.
     async function carregarEstatisticasYouTube() {
