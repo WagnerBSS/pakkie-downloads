@@ -24,7 +24,7 @@ async function youtubeGet(resource, params, apiKey) {
 }
 
 module.exports = async function handler(req, res) {
-  res.setHeader('Cache-Control', 'public, s-maxage=900, stale-while-revalidate=3600');
+  res.setHeader('Cache-Control', 'public, s-maxage=21600, stale-while-revalidate=86400');
   res.setHeader('Content-Type', 'application/json; charset=utf-8');
 
   if (req.method !== 'GET') {
@@ -41,7 +41,7 @@ module.exports = async function handler(req, res) {
 
   try {
     const channelData = await youtubeGet('channels', {
-      part: 'snippet,statistics,contentDetails',
+      part: 'snippet,statistics',
       forHandle: CHANNEL_HANDLE,
       maxResults: 1
     }, apiKey);
@@ -51,43 +51,26 @@ module.exports = async function handler(req, res) {
       return res.status(404).json({ error: `Não encontrei o canal ${CHANNEL_HANDLE}. Confira YOUTUBE_CHANNEL_HANDLE.` });
     }
 
-    // Busca até os 200 vídeos mais recentes do canal e monta o ranking por views.
-    // O limite mantém a consulta rápida e o consumo de cota baixo.
-    const uploadPlaylistId = channel.contentDetails?.relatedPlaylists?.uploads;
-    let pageToken = undefined;
-    const videoIds = [];
+    const searchData = await youtubeGet('search', {
+      part: 'snippet',
+      channelId: channel.id,
+      type: 'video',
+      order: 'viewCount',
+      maxResults: 50
+    }, apiKey);
 
-    for (let page = 0; page < 4; page++) {
-      const playlistData = await youtubeGet('playlistItems', {
-        part: 'contentDetails',
-        playlistId: uploadPlaylistId,
-        maxResults: 50,
-        pageToken
-      }, apiKey);
+    const videoIds = (searchData.items || [])
+      .map(item => item.id?.videoId)
+      .filter(Boolean);
 
-      for (const item of playlistData.items || []) {
-        const id = item.contentDetails?.videoId;
-        if (id) videoIds.push(id);
-      }
-
-      pageToken = playlistData.nextPageToken;
-      if (!pageToken || videoIds.length >= 200) break;
-    }
-
-    const videoBatches = [];
-    for (let i = 0; i < videoIds.length; i += 50) {
-      videoBatches.push(videoIds.slice(i, i + 50));
-    }
-
-    const videoResponses = await Promise.all(videoBatches.map(ids =>
-      youtubeGet('videos', {
+    const videoData = videoIds.length
+      ? await youtubeGet('videos', {
         part: 'snippet,statistics',
-        id: ids.join(',')
+        id: videoIds.join(',')
       }, apiKey)
-    ));
+      : { items: [] };
 
-    const videos = videoResponses
-      .flatMap(result => result.items || [])
+    const videos = (videoData.items || [])
       .map(video => ({
         id: video.id,
         title: video.snippet?.title || 'Vídeo sem título',
@@ -112,7 +95,7 @@ module.exports = async function handler(req, res) {
         hiddenSubscriberCount: Boolean(channel.statistics?.hiddenSubscriberCount)
       },
       videos,
-      rankingScope: 'Entre os 200 vídeos mais recentes do canal',
+      rankingScope: 'Vídeos, Shorts e lives mais vistos do canal',
       updatedAt: new Date().toISOString()
     });
   } catch (error) {

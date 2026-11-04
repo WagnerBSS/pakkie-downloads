@@ -17,6 +17,7 @@ CONFIGURAÇÃO OBRIGATÓRIA NA VERCEL:
 IMPORTANTE:
 - NÃO coloque a chave da API dentro do index.html.
 - A chave deve ficar somente na variável YOUTUBE_API_KEY da Vercel.
-- O painel mostra as views totais e a contagem aproximada de inscritos do canal, além de classificar os 8 vídeos mais vistos entre os 200 uploads mais recentes encontrados.
-- A contagem de inscritos fornecida pelo YouTube pode ser arredondada e ter atraso; ela não é atualizada em tempo real. A função usa cache na Vercel por 15 minutos, e a página também tenta atualizar nesse intervalo.
+- O painel mostra as views totais e a contagem aproximada de inscritos do canal. O ranking mistura vídeos, Shorts e lives e os ordena por visualizações, sem filtrar pelo formato.
+- A busca de vídeos usa a ordenação por visualizações da YouTube Data API e compara as views dos 50 primeiros resultados para exibir os 8 mais vistos. A API limita a busca por canal a até 500 resultados.
+- A contagem de inscritos fornecida pelo YouTube pode ser arredondada e ter atraso; ela não é atualizada em tempo real. A função usa cache na Vercel por 6 horas para controlar o consumo de cota da busca, e a página também tenta atualizar nesse intervalo.
 - Para publicar, mantenha a estrutura: index.html, PakkiePlays.jpg e pasta api/youtube.js na raiz do projeto.

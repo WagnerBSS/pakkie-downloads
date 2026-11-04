@@ -179,6 +179,167 @@
       flex-wrap: wrap;
     }
 
+    .recent-downloads {
+      width: calc(100% + 40px);
+      margin: 18px -20px -25px;
+      padding: 12px 0 15px;
+      border-top: 1px solid rgba(255, 255, 255, 0.07);
+      background: rgba(0, 0, 0, 0.32);
+      text-align: left;
+    }
+
+    .recent-downloads-heading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 10px;
+      color: #ff8291;
+      font-size: 0.65rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .recent-downloads-subtitle {
+      color: var(--text-muted);
+      font-size: 0.64rem;
+      font-weight: 600;
+      letter-spacing: 0;
+      text-transform: none;
+    }
+
+    .recent-downloads-mode {
+      min-width: 135px;
+      text-align: left;
+    }
+
+    .recent-downloads-live {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #ff4058;
+      box-shadow: 0 0 10px rgba(255, 42, 68, 0.8);
+      animation: recentDownloadsPulse 1.8s ease-in-out infinite;
+    }
+
+    @keyframes recentDownloadsPulse {
+      50% { opacity: 0.45; }
+    }
+
+    .recent-downloads-window {
+      width: 100%;
+      overflow: hidden;
+      -webkit-mask-image: linear-gradient(90deg, transparent, #000 3%, #000 97%, transparent);
+      mask-image: linear-gradient(90deg, transparent, #000 3%, #000 97%, transparent);
+    }
+
+    .recent-downloads-track,
+    .recent-downloads-group {
+      display: flex;
+      width: max-content;
+      align-items: stretch;
+    }
+
+    .recent-downloads-track {
+      animation: recentDownloadsScroll 58s linear infinite;
+      will-change: transform;
+    }
+
+    .recent-downloads-group {
+      gap: 12px;
+      padding-right: 12px;
+    }
+
+    @keyframes recentDownloadsScroll {
+      to { transform: translateX(-50%); }
+    }
+
+    .recent-downloads-window:hover .recent-downloads-track,
+    .recent-downloads-window:focus-within .recent-downloads-track {
+      animation-play-state: paused;
+    }
+
+    .recent-download-card {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: clamp(230px, 24vw, 290px);
+      min-height: 62px;
+      padding: 7px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 11px;
+      background: linear-gradient(135deg, rgba(28, 22, 27, 0.96), rgba(15, 18, 25, 0.96));
+      color: var(--text-white);
+      text-align: left;
+      text-decoration: none;
+      transition: border-color 0.2s ease, background 0.2s ease;
+    }
+
+    .recent-download-card:hover,
+    .recent-download-card:focus-visible {
+      border-color: rgba(255, 42, 68, 0.58);
+      background: linear-gradient(135deg, rgba(48, 23, 31, 0.98), rgba(18, 20, 28, 0.98));
+      outline: none;
+    }
+
+    .recent-download-thumb {
+      width: 78px;
+      height: 46px;
+      flex: 0 0 78px;
+      border-radius: 7px;
+      object-fit: cover;
+      background: #151922;
+    }
+
+    .recent-download-info {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .recent-download-category {
+      display: block;
+      margin-bottom: 3px;
+      color: #ff8291;
+      font-size: 0.59rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .recent-download-metric {
+      display: block;
+      margin-top: 3px;
+      color: var(--text-muted);
+      font-size: 0.6rem;
+      font-weight: 600;
+    }
+
+    .recent-download-title {
+      display: -webkit-box;
+      overflow: hidden;
+      color: #f0f6fc;
+      font-size: 0.72rem;
+      font-weight: 700;
+      line-height: 1.35;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+    }
+
+    .recent-download-arrow {
+      flex: 0 0 auto;
+      color: #ff687b;
+      font-size: 1.05rem;
+      font-weight: 800;
+      padding: 0 5px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .recent-downloads-live { animation: none; }
+      .recent-downloads-track { animation: none; }
+      .recent-downloads-window { overflow-x: auto; }
+    }
+
     .btn-social {
       display: inline-flex;
       align-items: center;
@@ -809,6 +970,11 @@
       .brand-logo { width: 52px; height: 52px; flex-basis: 52px; }
       .brand-identity { flex-direction: column; gap: 8px; }
       .download-counter { min-width: 235px; }
+      .recent-downloads {
+        width: calc(100% + 30px);
+        margin-right: -15px;
+        margin-left: -15px;
+      }
       .container { margin: 20px auto; padding: 0 15px; }
       .filter-btn { padding: 8px 16px; font-size: 0.8rem; }
       .grid-servidores { grid-template-columns: 1fr; gap: 18px; }
@@ -964,6 +1130,16 @@
         Entrar no Discord (#downloads)
       </a>
     </div>
+    <section class="recent-downloads" aria-label="Downloads recentes">
+      <div class="recent-downloads-heading">
+        <span class="recent-downloads-live" aria-hidden="true"></span>
+        <span class="recent-downloads-mode" id="recentDownloadsMode" aria-live="polite">Recém adicionados</span>
+        <span class="recent-downloads-subtitle" id="recentDownloadsSubtitle">Novidades da comunidade</span>
+      </div>
+      <div class="recent-downloads-window">
+        <div class="recent-downloads-track" id="recentDownloadsTrack"></div>
+      </div>
+    </section>
   </header>
 
   <main class="container">
@@ -1149,6 +1325,83 @@
       { nome: "wakemc - by Pakkie", id: "e74zebet21bai92", alerta: true }
     ];
 
+    let downloadCountsByServer = {};
+    let modoCarrosselDownloads = 0;
+
+    const modosCarrosselDownloads = [
+      {
+        titulo: 'Recém adicionados',
+        subtitulo: 'Novidades da comunidade',
+        ordenar: (a, b) => b.indice - a.indice,
+        metrica: () => 'Confira os últimos servidores'
+      },
+      {
+        titulo: 'Mais impulsionados',
+        subtitulo: 'Escolhidos pela comunidade',
+        ordenar: (a, b) => (b.item.impulsos || 0) - (a.item.impulsos || 0) || b.indice - a.indice,
+        metrica: item => `🚀 ${Number(item.impulsos || 0).toLocaleString('pt-BR')} impulsos`
+      },
+      {
+        titulo: 'Mais baixados',
+        subtitulo: 'Os downloads mais acessados',
+        ordenar: (a, b) => (downloadCountsByServer[b.item.id] || 0) - (downloadCountsByServer[a.item.id] || 0) || b.indice - a.indice,
+        metrica: item => `↓ ${Number(downloadCountsByServer[item.id] || 0).toLocaleString('pt-BR')} cliques`
+      }
+    ];
+
+    function renderizarCarrosselDownloads() {
+      const track = document.getElementById('recentDownloadsTrack');
+      const modo = modosCarrosselDownloads[modoCarrosselDownloads];
+      const modeLabel = document.getElementById('recentDownloadsMode');
+      const subtitleLabel = document.getElementById('recentDownloadsSubtitle');
+      const destaques = servidoresData
+        .map((item, indice) => ({ item, indice }))
+        .filter(({ item }) => item.categoria !== 'tutoriais' && item.categoria !== 'edicao')
+        .sort(modo.ordenar)
+        .slice(0, 8);
+
+      modeLabel.textContent = modo.titulo;
+      subtitleLabel.textContent = modo.subtitulo;
+
+      const cards = destaques.map(({ item }) => `
+        <a
+          class="recent-download-card"
+          href="${escapeHtml(item.mediafireUrl)}"
+          target="_blank"
+          rel="noopener noreferrer"
+          data-download-counter
+          data-download-id="${escapeHtml(item.id)}"
+          aria-label="Acessar download: ${escapeHtml(item.titulo)}"
+        >
+          <img
+            class="recent-download-thumb"
+            src="https://img.youtube.com/vi/${encodeURIComponent(item.youtubeId)}/mqdefault.jpg"
+            alt=""
+            loading="lazy"
+            decoding="async"
+          >
+          <span class="recent-download-info">
+            <span class="recent-download-category">${escapeHtml(item.categoriaNome)}</span>
+            <span class="recent-download-title">${escapeHtml(item.titulo)}</span>
+            <span class="recent-download-metric">${escapeHtml(modo.metrica(item))}</span>
+          </span>
+          <span class="recent-download-arrow" aria-hidden="true">↗</span>
+        </a>
+      `).join('');
+
+      track.innerHTML = `
+        <div class="recent-downloads-group">${cards}</div>
+        <div class="recent-downloads-group" aria-hidden="true" inert>${cards}</div>
+      `;
+    }
+
+    function iniciarRotacaoCarrosselDownloads() {
+      window.setInterval(() => {
+        modoCarrosselDownloads = (modoCarrosselDownloads + 1) % modosCarrosselDownloads.length;
+        renderizarCarrosselDownloads();
+      }, 10000);
+    }
+
     function videoParaArquivo(nome) {
       const titulo = nome.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
       if (titulo.includes('rankup magic')) return 'g-Jnrt2NcAc';
@@ -1228,6 +1481,20 @@
         console.error('Falha ao carregar contador de downloads:', error);
         countElement.textContent = 'Indisponível';
       });
+
+      db.ref('downloads/servidores').on('value', snapshot => {
+        const dados = snapshot.val() || {};
+        downloadCountsByServer = {};
+        Object.keys(dados).forEach(key => {
+          const count = Number(dados[key]);
+          if (Number.isFinite(count) && count >= 0) {
+            downloadCountsByServer[key] = count;
+          }
+        });
+        renderizarCarrosselDownloads();
+      }, error => {
+        console.error('Falha ao carregar downloads por servidor:', error);
+      });
     }
 
     document.addEventListener('click', event => {
@@ -1243,6 +1510,18 @@
       }).catch(error => {
         console.error('Falha ao contabilizar clique no download:', error);
       });
+
+      const downloadId = downloadLink.dataset.downloadId;
+      if (downloadId) {
+        db.ref('downloads/servidores/' + downloadId).transaction(currentValue => {
+          const currentCount = Number(currentValue);
+          return (Number.isFinite(currentCount) && currentCount >= 0 ? currentCount : 0) + 1;
+        }).then(result => {
+          if (!result.committed) throw new Error('O clique por servidor não foi contabilizado.');
+        }).catch(error => {
+          console.error('Falha ao contabilizar clique por servidor:', error);
+        });
+      }
     });
 
     function carregarImpulsosFirebase() {
@@ -1253,6 +1532,9 @@
 
       db.ref('impulsos').on('value', (snapshot) => {
         const dados = snapshot.val();
+        servidoresData.forEach(item => {
+          item.impulsos = 0;
+        });
         if (dados) {
           Object.keys(dados).forEach(key => {
             const item = servidoresData.find(s => s.id === key);
@@ -1267,12 +1549,13 @@
     }
 
     function reordenarERenderizar() {
-      servidoresData.sort((a, b) => (b.impulsos || 0) - (a.impulsos || 0));
+      const servidoresOrdenados = servidoresData.slice().sort((a, b) => (b.impulsos || 0) - (a.impulsos || 0));
       if (categoriaAtual === 'todos') {
-        renderizarCards(servidoresData);
+        renderizarCards(servidoresOrdenados);
       } else {
-        renderizarCards(servidoresData.filter(item => item.categoria === categoriaAtual));
+        renderizarCards(servidoresOrdenados.filter(item => item.categoria === categoriaAtual));
       }
+      renderizarCarrosselDownloads();
     }
 
     function renderizarCards(lista) {
@@ -1315,7 +1598,7 @@
               <button class="btn-upvote" onclick="impulsionar('${item.id}')">
                 🚀 Impulsionar (${totalImpulsos})
               </button>
-              <a href="${item.mediafireUrl}" target="_blank" rel="noopener noreferrer" class="btn-download" data-download-counter>
+              <a href="${item.mediafireUrl}" target="_blank" rel="noopener noreferrer" class="btn-download" data-download-counter data-download-id="${item.id}">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                 ${item.mediafireUrl === discordUrl ? 'Ver arquivos no Discord' : 'Baixar arquivo'}
               </a>
@@ -1338,6 +1621,8 @@
 
     carregarImpulsosFirebase();
     carregarContadorDownloads();
+    renderizarCarrosselDownloads();
+    iniciarRotacaoCarrosselDownloads();
     renderizarBibliotecaArquivos();
     document.getElementById('downloadLibrarySearch').addEventListener('input', event => {
       renderizarBibliotecaArquivos(event.target.value);
@@ -1445,7 +1730,8 @@
             ? 'Indisponível'
             : Number(data.channel.subscriberCount).toLocaleString('pt-BR');
         scopeEl.textContent = data.rankingScope || 'Vídeos do canal';
-        videosEl.innerHTML = (data.videos || []).map((video, index) => `
+        const videos = data.videos || [];
+        videosEl.innerHTML = videos.map((video, index) => `
           <a class="youtube-video-card" href="${video.url}" target="_blank" rel="noopener noreferrer" title="${escapeHtml(video.title)}">
             <img class="youtube-video-thumb" src="${video.thumbnail}" alt="Thumbnail de ${escapeHtml(video.title)}" loading="lazy" onerror="this.onerror=null;this.src='https://i.ytimg.com/vi/${video.id}/hqdefault.jpg';">
             <div class="youtube-video-info">
@@ -1457,7 +1743,7 @@
 
         const updatedAt = data.updatedAt ? new Date(data.updatedAt) : new Date();
         updatedEl.textContent = `Atualizado às ${updatedAt.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`;
-        messageEl.textContent = 'Dados públicos do YouTube. Inscritos podem ter arredondamento e atraso na atualização.';
+        messageEl.textContent = 'Ranking de visualizações do canal, incluindo vídeos, Shorts e lives. Atualizado a cada 6 horas.';
         messageEl.classList.remove('error');
       } catch (error) {
         console.error('Falha ao carregar estatísticas do YouTube:', error);
@@ -1475,7 +1761,7 @@
     }
 
     carregarEstatisticasYouTube();
-    setInterval(carregarEstatisticasYouTube, 15 * 60 * 1000);
+    setInterval(carregarEstatisticasYouTube, 6 * 60 * 60 * 1000);
 
   </script>
 </body>
