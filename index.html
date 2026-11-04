@@ -83,10 +83,92 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      position: relative;
       gap: 16px;
       flex-wrap: wrap;
       max-width: 100%;
       width: 100%;
+    }
+
+    .brand-identity {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    .download-counter {
+      position: absolute;
+      right: 0;
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      min-width: 240px;
+      padding: 13px 17px;
+      border: 1px solid rgba(255, 90, 110, 0.28);
+      border-radius: 14px;
+      background:
+        radial-gradient(ellipse at 0% 50%, rgba(255, 42, 68, 0.16), transparent 68%),
+        linear-gradient(135deg, rgba(28, 19, 25, 0.96), rgba(13, 16, 23, 0.96));
+      text-align: left;
+      box-shadow: 0 8px 26px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+      overflow: hidden;
+    }
+
+    .download-counter::after {
+      content: '';
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 3px;
+      background: linear-gradient(180deg, #ff8291, #ff2a44);
+      box-shadow: 0 0 14px rgba(255, 42, 68, 0.65);
+    }
+
+    .download-counter-icon {
+      display: grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      flex: 0 0 42px;
+      border: 1px solid rgba(255, 87, 107, 0.25);
+      border-radius: 12px;
+      background: rgba(255, 42, 68, 0.12);
+      color: #ff687b;
+    }
+
+    .download-counter-info {
+      min-width: 0;
+    }
+
+    .download-counter-label {
+      color: var(--text-muted);
+      font-size: 0.66rem;
+      font-weight: 800;
+      letter-spacing: 0.09em;
+      white-space: nowrap;
+    }
+
+    .download-counter-row {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-top: 2px;
+    }
+
+    .download-counter-value {
+      color: #fff;
+      font-size: 1.55rem;
+      font-weight: 800;
+      letter-spacing: -0.045em;
+      line-height: 1.1;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .download-counter-caption {
+      color: #ff8291;
+      font-size: 0.68rem;
+      font-weight: 700;
+      white-space: nowrap;
     }
 
     .header-social-links {
@@ -707,17 +789,26 @@
       font-size: 0.78rem;
     }
 
+    @media (max-width: 1000px) {
+      .brand-header-content {
+        flex-direction: column;
+        gap: 8px;
+      }
+      .download-counter {
+        position: static;
+        margin-top: 6px;
+      }
+    }
+
     @media (max-width: 600px) {
       .ad-popup-box { width: 94%; }
       .ad-popup-header { padding: 12px 48px 12px 14px; font-size: 0.76rem; }
       .youtube-preview-bottom { padding: 28px 11px 10px; }
       header { padding: 18px 15px; }
-      .brand-header-content {
-        flex-direction: column;
-        gap: 8px;
-      }
       .brand-title { font-size: clamp(1.4rem, 7vw, 1.8rem); }
       .brand-logo { width: 52px; height: 52px; flex-basis: 52px; }
+      .brand-identity { flex-direction: column; gap: 8px; }
+      .download-counter { min-width: 235px; }
       .container { margin: 20px auto; padding: 0 15px; }
       .filter-btn { padding: 8px 16px; font-size: 0.8rem; }
       .grid-servidores { grid-template-columns: 1fr; gap: 18px; }
@@ -841,8 +932,25 @@
 
   <header>
     <div class="brand-header-content">
-      <img src="PakkiePlays.jpg" alt="Pakkie Logo" class="brand-logo">
-      <div class="brand-title">PAKKIE DOWNLOADS</div>
+      <div class="brand-identity">
+        <img src="PakkiePlays.jpg" alt="Pakkie Logo" class="brand-logo">
+        <div class="brand-title">PAKKIE DOWNLOADS</div>
+      </div>
+      <div class="download-counter" aria-label="Contador de cliques nos links de download">
+        <span class="download-counter-icon" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3v11m0 0 4-4m-4 4-4-4"/>
+            <path d="M5 15v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4"/>
+          </svg>
+        </span>
+        <div class="download-counter-info">
+          <div class="download-counter-label">DOWNLOADS INICIADOS</div>
+          <div class="download-counter-row">
+            <div class="download-counter-value" id="downloadClickCount" role="status" aria-live="polite">Carregando...</div>
+            <span class="download-counter-caption">cliques registrados</span>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="brand-subtitle">Servidores de Minecraft, Packs, Plugins e Recursos Prontos</div>
 
@@ -1074,7 +1182,7 @@
                 ${arquivo.alerta ? '<p class="download-file-warning">⚠ O Pakkie recomenda cautela: o vídeo associado pode não mostrar exatamente o conteúdo deste arquivo.</p>' : ''}
               </div>
               <div class="download-file-actions">
-                <a href="https://www.mediafire.com/file/${arquivo.id}" target="_blank" rel="noopener noreferrer">Baixar</a>
+                <a href="https://www.mediafire.com/file/${arquivo.id}" target="_blank" rel="noopener noreferrer" data-download-counter>Baixar</a>
                 <a href="${videoUrl}" target="_blank" rel="noopener noreferrer">Vídeo de referência</a>
               </div>
             </article>
@@ -1103,6 +1211,39 @@
         window.alert('Não foi possível salvar seu impulso. Tente novamente.');
       });
     }
+
+    function carregarContadorDownloads() {
+      const countElement = document.getElementById('downloadClickCount');
+      if (!db) {
+        countElement.textContent = 'Indisponível';
+        return;
+      }
+
+      db.ref('downloads/total').on('value', snapshot => {
+        const count = Number(snapshot.val());
+        countElement.textContent = Number.isFinite(count) && count >= 0
+          ? count.toLocaleString('pt-BR')
+          : '0';
+      }, error => {
+        console.error('Falha ao carregar contador de downloads:', error);
+        countElement.textContent = 'Indisponível';
+      });
+    }
+
+    document.addEventListener('click', event => {
+      if (!(event.target instanceof Element)) return;
+      const downloadLink = event.target.closest('[data-download-counter]');
+      if (!downloadLink || !db) return;
+
+      db.ref('downloads/total').transaction(currentValue => {
+        const currentCount = Number(currentValue);
+        return (Number.isFinite(currentCount) && currentCount >= 0 ? currentCount : 0) + 1;
+      }).then(result => {
+        if (!result.committed) throw new Error('O clique no download não foi contabilizado.');
+      }).catch(error => {
+        console.error('Falha ao contabilizar clique no download:', error);
+      });
+    });
 
     function carregarImpulsosFirebase() {
       if (!db) {
@@ -1174,7 +1315,7 @@
               <button class="btn-upvote" onclick="impulsionar('${item.id}')">
                 🚀 Impulsionar (${totalImpulsos})
               </button>
-              <a href="${item.mediafireUrl}" target="_blank" rel="noopener noreferrer" class="btn-download">
+              <a href="${item.mediafireUrl}" target="_blank" rel="noopener noreferrer" class="btn-download" data-download-counter>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                 ${item.mediafireUrl === discordUrl ? 'Ver arquivos no Discord' : 'Baixar arquivo'}
               </a>
@@ -1196,6 +1337,7 @@
     }
 
     carregarImpulsosFirebase();
+    carregarContadorDownloads();
     renderizarBibliotecaArquivos();
     document.getElementById('downloadLibrarySearch').addEventListener('input', event => {
       renderizarBibliotecaArquivos(event.target.value);
